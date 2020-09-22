@@ -5,7 +5,7 @@
 
 
 <ul>
-    ${taskData.map(task => {
-        return `<li>${taskData.task}</li>`
-    })}
+${taskData.map(function(task) {
+    return `<li>${task.id}: ${task.task}, completed: ${task.completed}</li>`
+}).join('')}
 </ul>
