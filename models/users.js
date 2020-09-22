@@ -9,6 +9,10 @@ class userModel {
     this.password = password;
   }
 
+  async checkPassword(hashedPassword) {
+      return bcrypt.compareSync(this.password, hashedPassword);
+  }
+
   async addUser() {
     try {
       const response = await db.one(
@@ -23,8 +27,16 @@ class userModel {
   }
   async login() {
     try {
-      const response = await db.one(``);
-      return response;
+      const response = await db.one(`SELECT id, name, password FROM users WHERE email = $1`, [this.email]);
+      const isValid = await this.checkPassword(response.password);
+      console.log("Is Valid? ", isValid);
+      console.log('Login Response: ', response)
+      if(!!isValid) {
+          const {name, id} = response;
+          return { isValid, name, user_id: id}
+      } else {
+          return {isValid};
+      }
     } catch (error) {
       console.log("Error!: ", error.message);
       return error.message;

@@ -27,15 +27,14 @@ app.use(express.urlencoded({extended: false}));
 app.use(logger);
 app.use(helmet());
 
-// app.use(
-//     session({
-//         store: new FileStore(),
-//         secret: "idk",
-//         resave: false,
-//         saveUninitialized: true,
-//         is_logged_in: false
-//     })
-// );
+app.use(
+    session({
+        secret: "idk",
+        resave: false,
+        saveUninitialized: true,
+        is_logged_in: false
+    })
+);
 
 app.use(cookieParser())
 ;

@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 router.get('/login', (req,res) => {
     res.render('template', {
         locals: {
-            title: "Login Page"
+            title: "Login Page",
+            is_logged_in: req.session.is_logged_in
         },
         partials: {
             partial: "partial-log-in"
@@ -17,7 +18,8 @@ router.get('/login', (req,res) => {
 router.get('/signup', (req,res) => {
     res.render('template', {
         locals: {
-            title: "Sign Up Page"
+            title: "Sign Up Page",
+            is_logged_in: req.session.is_logged_in
         },
         partials: {
             partial: "partial-sign-up"
@@ -43,6 +45,23 @@ router.post("/signup", (req,res) => {
             res.redirect('/users/signup');
         }
         
+    })
+})
+
+router.post('/login', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const userInstance = new userModel(null, null, email, password);
+    userInstance.login().then(response => {
+        req.session.is_logged_in = response.isValid;
+        if(!!response.isValid) {
+            const {name, user_id} = response;
+            req.session.name = name;
+            req.session.user_id = user_id;
+            res.redirect('/tasks/to-do');
+        } else {
+            res.sendStatus(401)
+        }
     })
 })
 
